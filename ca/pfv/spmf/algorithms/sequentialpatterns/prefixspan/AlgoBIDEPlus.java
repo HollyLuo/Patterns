@@ -242,6 +242,7 @@ public class AlgoBIDEPlus{
 		}else{
 			// CASE 2: the database does not have multiple items per itemset.
 			bideWithSingleItems(mapSequenceID);	
+			
 		}
 	}
 	
@@ -256,6 +257,7 @@ public class AlgoBIDEPlus{
 		//=============== REMOVE INFREQUENT ITEMS ========================
 		// We scan the database to remove infrequent items  and resize sequences after removal.
 		// For each sequence in the current database
+//		System.out.println(sequenceDatabase.size());
 		for(int i=0; i < sequenceDatabase.size(); i++){
 			// Get the sequence
 			int[] sequence  = sequenceDatabase.getSequences().get(i);
@@ -267,6 +269,7 @@ public class AlgoBIDEPlus{
 			// for each token in this sequence (item, separator between itemsets (-1) or end of sequence (-2)
 			for(int j = 0; j < sequence.length; j++){
 				int token = sequence[j];
+				
 				
 				// if it is an item
 				if(token > 0){
@@ -291,6 +294,9 @@ public class AlgoBIDEPlus{
 						int[] newSequence = new int[currentPosition+1];
 						System.arraycopy(sequence, 0, newSequence, 0, currentPosition+1);
 						sequenceDatabase.getSequences().set(i, newSequence);
+						
+						
+						
 						// continue to next sequence
 						continue; 
 					}else{
@@ -299,6 +305,13 @@ public class AlgoBIDEPlus{
 					}
 				}
 			}
+			
+			
+			System.out.println(sequence.length);
+			for(int y=0;y<sequence.length;y++){
+				System.out.print(sequence[y]+";");
+			}
+			System.out.println();
 		}
 		
 		//============= WE EXPLORE EACH PROJECTED DATABASE  ================================

@@ -17,6 +17,7 @@ public class MainTestBIDEPlus_saveToMemory {
 	public static void main(String [] arg) throws IOException{    
 		// Load a sequence database
 		String inputfile = fileToPath("contextPrefixSpan3.txt");
+		
 		// Create an instance of the algorithm
 		AlgoBIDEPlus algo  = new AlgoBIDEPlus();
 		

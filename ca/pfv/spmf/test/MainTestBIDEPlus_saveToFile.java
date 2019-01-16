@@ -12,7 +12,7 @@ public class MainTestBIDEPlus_saveToFile {
 
 	public static void main(String [] arg) throws IOException{    
 		// Load a sequence database
-		String inputfile = fileToPath("contextPrefixSpan.txt");
+		String inputfile = fileToPath("contextPrefixSpan3.txt");
 		
 		int minsup = 2; // we use a minsup of 2 sequences (50 % of the database size)
 		

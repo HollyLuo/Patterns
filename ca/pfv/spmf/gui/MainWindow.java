@@ -167,6 +167,7 @@ public class MainWindow extends JFrame implements ThreadCompleteListener, Uncaug
 
         // Combo box to store the list of algorithms.
         comboBox = new JComboBox<String>(new Vector<String>());
+        
         comboBox.setMaximumRowCount(20);
 
         //************************************************************************
@@ -589,7 +590,7 @@ public class MainWindow extends JFrame implements ThreadCompleteListener, Uncaug
      * when the user change algorithms or when the JFrame is first created.
      */
     private  void hideAllParams() {
-        labelParam1.setVisible(false);
+    	labelParam1.setVisible(false);
         labelParam2.setVisible(false);
         labelParam3.setVisible(false);
         labelParam4.setVisible(false);

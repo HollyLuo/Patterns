@@ -70,11 +70,14 @@ public class SequentialPatterns {
 		int levelCount=0;
 		int patternCount =0;
 		for(List<SequentialPattern> level : levels){
+			System.out.println(level.size());
 			r.append("  L");
 			r.append(levelCount);
 			r.append(" \n");
 			for(SequentialPattern sequence : level){
+			  
 				patternCount++;
+				
 				r.append("  pattern ");
 				r.append(patternCount);
 				r.append(":  ");
