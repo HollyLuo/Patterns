@@ -56,6 +56,7 @@ public class CycleDetection {
         oriString = inputString;
     }
     
+    
 //    public String getStart() {
 //    	return this.startVertex;	
 //	}
@@ -162,14 +163,15 @@ public class CycleDetection {
         	
         	   //the cycle real exit.
         	   int number = findCycleNumberFromInputString(convertToString(cycle));
-//        	   System.out.println(number);
+        	   
+        	   System.out.println(number);
         	   if(number != 0){
 //        		   System.out.println(cycle.toString());
 //        		   System.out.println(" cycle number2:" + countCycleByEdges(cycle));
 //        		   System.out.println(cycle.size());
 //        		   System.out.println(cycle2.size());
         		   // the cycle size >1 ,not 2->2
-        		   if(cycle2.size()>1){
+        		   if(cycle2.size()>=1){
         			   cicle_serial+=1;
         			   Cycle cycle3 = new Cycle();
         			   cycle3.setSerialNumber(cicle_serial);
@@ -280,21 +282,22 @@ public class CycleDetection {
 		}
 	}
 	
-	public void splitCycleList() {
-		for(int i=0;i<cycleList.size();i++){
-			int weight = cycleList.get(i).getWeight();
-			while(weight>0){
-				System.out.println("cycle: "+ cycleList.get(i).getTrace());
-				weight--;
-			}
-		}
-	}
+//	public void splitCycleList() {
+//		for(int i=0;i<cycleList.size();i++){
+//			int weight = cycleList.get(i).getWeight();
+//			while(weight>0){
+//				System.out.println("cycle: "+ cycleList.get(i).getTrace());
+//				weight--;
+//			}
+//		}
+//	}
 	public String getStart() {
 		return start;
 	}
 	public void setStart(String start) {
 		this.start = start;
 	}
+	
 	
 	
 	

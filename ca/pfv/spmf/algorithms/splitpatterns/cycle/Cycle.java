@@ -33,6 +33,8 @@ public class Cycle{
 	public void setSerialNumber(int serial_number) {
 		this.serial_number = serial_number;
 	}
+	
+	
 	    
 
 }

@@ -108,6 +108,7 @@ public class SplitBehaviorChain {
 		ArrayList<Cycle> cycleList = new ArrayList<>();
 		CycleDetection cycleDetection = new CycleDetection(inputString,graph);
 		cycleDetection.hasCycle();
+		cycleList = cycleDetection.getCycleList();
 		String start  = cycleDetection.getStart();
 		
 		System.out.println("--------------Behavior split-----------------");
@@ -127,10 +128,13 @@ public class SplitBehaviorChain {
 				return o2.getValue().compareTo(o1.getValue());
 			}
         });
+        
         printList(list);
         System.out.println();
+        
         System.out.println("--------------Frequecy Pattern -----------------");
         Map<List<String>, Integer> map3 = new HashMap<List<String>, Integer>();
+        foundInternalCycle(pattList,cycleList);
         map3 = getFrequencyPattern(map2,size,support);
         printMap(map3);
 		
@@ -139,6 +143,66 @@ public class SplitBehaviorChain {
 		writeFileContext(pattList,path);	
 	}
 	
+	private static int findCycleNumberFromInputString(String oriString,String sToFind) {
+//    	String a[] = s.split("#");
+//    	String sToFind = a[1];
+//    	System.out.println("sToFind: " + sToFind);
+        int num = 0;
+        String newString = oriString;
+//        System.out.println("newString: "+newString);
+        while (newString.contains(sToFind)) {
+//        	System.out.println("indexOf: "+this.oriString.indexOf(sToFind));
+        	newString = newString.substring(newString.indexOf(sToFind) + sToFind.length());
+//        	System.out.println("newString: "+newString);
+            num ++;
+        }
+        return num;
+    }
+	
+	//判断original pattern是否存在循环
+	private static void foundInternalCycle(ArrayList<List<String>> pattList, ArrayList<Cycle> cycleList) {
+		for (List<String> patt : pattList)
+		{
+            String patt1 = patt.toString();
+		    for(Cycle cycle: cycleList){
+		    	ArrayList<String> cycleTrace = cycle.getTrace();
+		    	if(!patt.equals(cycleTrace)){
+		    	    System.out.println(patt1+"....");
+		    	    String cycleChain= convertToString(cycleTrace);
+//		    	    String chain = cycleChain.toString();
+		    	    
+//		    		System.out.println(patt.containsAll(cycleChain));
+		    	    System.out.println(cycleChain);
+		    	    System.out.println(findCycleNumberFromInputString(patt1,cycleChain));
+		    	    
+//			    	System.out.println(patt1.contains(cycleChain));
+		    	}
+		    }
+		    	
+		    
+		}
+		
+	}
+
+	private static String convertToString(ArrayList<String> cycleTrace) {
+		String stringCycle = "";
+//		if(cycleTrace.size()==1){
+//			stringCycle = cycleTrace.get(0);
+//		}else if(cycleTrace.size()>1){
+//			
+//		}
+		
+		for(int i=0;i<cycleTrace.size();i++){
+			if(i==cycleTrace.size()-1){
+				stringCycle +=cycleTrace.get(i);
+			}else{
+				stringCycle +=cycleTrace.get(i) + ",";
+			}
+		}
+		
+		return stringCycle;
+	}
+
 	private static Map<List<String>, Integer> getFrequencyPattern(Map<List<String>, Integer> map2, int size, float support) {
 		Map<List<String>, Integer> map = new HashMap<List<String>, Integer>();
 //		System.out.println(size);
