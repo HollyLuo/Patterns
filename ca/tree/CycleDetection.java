@@ -113,32 +113,3 @@ public class CycleDetection {
     }
 }
 
-//void findCycle(String name)   //递归DFS  
-//{  
-//  if(visited.contains(name))  
-//  {  
-//      int j;  
-//      if((j=trace.indexOf(name))!=-1)  
-//      {  
-//          hasCycle=true;  
-//          System.out.print("Cycle:");  
-//          while(j<trace.size())  
-//          {  
-//              System.out.print(trace.get(j)+" ");  
-//              j++;  
-//          }  
-//          System.out.print("\n");  
-//          return;  
-//      }  
-//      return;  
-//  }  
-//  visited.add(name);  
-//  trace.add(name);  
-//    
-//  for(int i=0;i<n;i++)  
-//  {  
-//      if(e[v][i]==1)  
-//          findCycle(i);  
-//  }  
-//  trace.remove(trace.size()-1);  
-//}  

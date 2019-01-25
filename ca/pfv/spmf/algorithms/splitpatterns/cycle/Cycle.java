@@ -2,10 +2,12 @@ package pfv.spmf.algorithms.splitpatterns.cycle;
 
 import java.util.ArrayList;
 
+
 public class Cycle{
      private int serial_number;
 	 private ArrayList<String> trace;//从出发节点到当前节点的轨迹
 	 private int weight; 
+
 	 
 	 public Cycle() {
 //	     this.serial_number = 0;
@@ -33,8 +35,5 @@ public class Cycle{
 	public void setSerialNumber(int serial_number) {
 		this.serial_number = serial_number;
 	}
-	
-	
-	    
 
 }

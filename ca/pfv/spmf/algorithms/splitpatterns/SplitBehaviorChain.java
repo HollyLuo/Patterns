@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
+import com.sun.security.auth.NTDomainPrincipal;
+
 import pfv.spmf.algorithms.splitpatterns.cycle.Graph;
 import pfv.spmf.algorithms.splitpatterns.cycle.Edge;
 import pfv.spmf.algorithms.splitpatterns.cycle.Vertex;
@@ -112,30 +116,77 @@ public class SplitBehaviorChain {
 		String start  = cycleDetection.getStart();
 		
 		System.out.println("--------------Behavior split-----------------");
-		ArrayList<List<String>> pattList = new ArrayList<List<String>>();
+		List<List<String>> pattList = new ArrayList<List<String>>();
 	    pattList =  SplitInputStringByStartVertex(inputString,start);
 	    int size = pattList.size();
 	    
 	    System.out.println("--------------All Pattern -----------------");
-	    Map<List<String>, Integer> map2 = new HashMap<List<String>, Integer>();
-	    map2 = CountDuplicatedList(pattList);
+//	    Map<List<String>, Integer> map2 = new HashMap<List<String>, Integer>();
+	    
+	    List<Pattern> patternList =  CountDuplicatedList(pattList);
+//	    List<Pattern> patternList2 = new ArrayList<>();
+//	    patternList2.addAll(patternList);
+	    
+	    for(Pattern pattern : patternList){
+	    	pattern.printPattern(); 	
+	    	pattern.foundInternalCycle(cycleList);
+	    	pattern.removeInternalCycle();
+	    	if(pattern.hasInternalCycle){
+	    		
+	    		System.out.println("new_trace: "+ pattern.getNewTrace());
+	    		
+	    	}
+//	    		List<String> newTrace = pattern.getNewTrace();
+//	    		Pattern pattern2 = new Pattern();
+//	    		
+//	    		pattern2.setTrace(newTrace);
+//	    		patternList2.add(pattern2);
+//	    		System.out.println("---remove Internal Cycle----");
+////	    		pattern2.printPattern();
+//	    	}else {
+//	    		patternList2.add(pattern);
+//			}
+//	    	System.out.println("------------");
+	    }
+	    
+	    List<Pattern> afterCountPatternList =  CountPattern(patternList);
+	    System.out.println("-----------------afterCountPatternList-------------");
+	    for(Pattern new_pattern : afterCountPatternList){
+	    	new_pattern.printPattern(); 
+	    	System.out.println("---------including---------");
+	    	for(Pattern ori_pattern : patternList){
+	    		if(ori_pattern.getNewTrace().equals(new_pattern.getTrace())){	    			
+	    			ori_pattern.printPattern();
+    			}
+	    	}
+	    	System.out.println("");
+	    	System.out.println("");
+	    }
+	    
+	    
+	   
+	   
+//	    patternList.get(4).printPattern();
+//	    patternList.get(4).foundInternalCycle(cycleList);
+	    
 //	    System.out.println("\nMap排序-以key排序");
 
-	    List<Map.Entry<List<String>, Integer>> list = new ArrayList<Map.Entry<List<String>, Integer>>(map2.entrySet());
-        Collections.sort(list,new Comparator<Map.Entry<List<String>, Integer>>() {
-			@Override
-			public int compare(Entry<List<String>, Integer> o1, Entry<List<String>, Integer> o2) {
-				return o2.getValue().compareTo(o1.getValue());
-			}
-        });
-        
-        printList(list);
-        System.out.println();
+//	    List<Map.Entry<List<String>, Integer>> list = new ArrayList<Map.Entry<List<String>, Integer>>(map2.entrySet());
+//        Collections.sort(list,new Comparator<Map.Entry<List<String>, Integer>>() {
+//			@Override
+//			public int compare(Entry<List<String>, Integer> o1, Entry<List<String>, Integer> o2) {
+//				return o2.getValue().compareTo(o1.getValue());
+//			}
+//        });
+//        
+//        printList(list);
+//        System.out.println();
         
         System.out.println("--------------Frequecy Pattern -----------------");
         Map<List<String>, Integer> map3 = new HashMap<List<String>, Integer>();
-        foundInternalCycle(pattList,cycleList);
-        map3 = getFrequencyPattern(map2,size,support);
+       
+//        foundInternalCycle(pattList,cycleList);
+//        map3 = getFrequencyPattern(map2,size,support);
         printMap(map3);
 		
 		String path="/Users/ling/Desktop/pattern/spmf/ca/pfv/spmf/test/contextPrefixSpan2.txt";
@@ -143,65 +194,90 @@ public class SplitBehaviorChain {
 		writeFileContext(pattList,path);	
 	}
 	
-	private static int findCycleNumberFromInputString(String oriString,String sToFind) {
-//    	String a[] = s.split("#");
-//    	String sToFind = a[1];
-//    	System.out.println("sToFind: " + sToFind);
-        int num = 0;
-        String newString = oriString;
-//        System.out.println("newString: "+newString);
-        while (newString.contains(sToFind)) {
-//        	System.out.println("indexOf: "+this.oriString.indexOf(sToFind));
-        	newString = newString.substring(newString.indexOf(sToFind) + sToFind.length());
-//        	System.out.println("newString: "+newString);
-            num ++;
-        }
-        return num;
-    }
-	
-	//判断original pattern是否存在循环
-	private static void foundInternalCycle(ArrayList<List<String>> pattList, ArrayList<Cycle> cycleList) {
-		for (List<String> patt : pattList)
-		{
-            String patt1 = patt.toString();
-		    for(Cycle cycle: cycleList){
-		    	ArrayList<String> cycleTrace = cycle.getTrace();
-		    	if(!patt.equals(cycleTrace)){
-		    	    System.out.println(patt1+"....");
-		    	    String cycleChain= convertToString(cycleTrace);
-//		    	    String chain = cycleChain.toString();
-		    	    
-//		    		System.out.println(patt.containsAll(cycleChain));
-		    	    System.out.println(cycleChain);
-		    	    System.out.println(findCycleNumberFromInputString(patt1,cycleChain));
-		    	    
-//			    	System.out.println(patt1.contains(cycleChain));
-		    	}
-		    }
-		    	
-		    
-		}
-		
-	}
-
-	private static String convertToString(ArrayList<String> cycleTrace) {
-		String stringCycle = "";
-//		if(cycleTrace.size()==1){
-//			stringCycle = cycleTrace.get(0);
-//		}else if(cycleTrace.size()>1){
-//			
-//		}
-		
-		for(int i=0;i<cycleTrace.size();i++){
-			if(i==cycleTrace.size()-1){
-				stringCycle +=cycleTrace.get(i);
-			}else{
-				stringCycle +=cycleTrace.get(i) + ",";
+	private static List<Pattern> CountPattern(List<Pattern> patternList) {
+		List<Pattern> afterCountPatternList = new ArrayList<>();	
+		Map<List<String>, Pattern> map = new HashMap<List<String>, Pattern>();
+		Pattern pattern;
+		int pattern_name = 0;
+		for(Pattern item :patternList){
+			pattern = map.get(item.getNewTrace());
+			
+//			System.out.println("item.getNewTrace():"+item.getNewTrace());
+			if(pattern == null){
+				pattern = new Pattern();
+				pattern.setPatternName(pattern_name);
+				pattern.setTrace(item.getNewTrace());
+				pattern.setWeight(item.getWeight());
+				pattern_name+=1;
+				map.put(item.getNewTrace(), pattern);
+				afterCountPatternList.add(pattern);	
+			}else {
+				pattern.setWeight(pattern.getWeight()+item.getWeight());
 			}
 		}
-		
-		return stringCycle;
+		return afterCountPatternList;
 	}
+	
+//	
+//	private static int findCycleNumberFromInputString(String oriString,String sToFind) {
+////    	String a[] = s.split("#");
+////    	String sToFind = a[1];
+////    	System.out.println("sToFind: " + sToFind);
+//        int num = 0;
+//        String newString = oriString;
+////        System.out.println("newString: "+newString);
+//        while (newString.contains(sToFind)) {
+////        	System.out.println("indexOf: "+this.oriString.indexOf(sToFind));
+//        	newString = newString.substring(newString.indexOf(sToFind) + sToFind.length());
+////        	System.out.println("newString: "+newString);
+//            num ++;
+//        }
+//        return num;
+//    }
+	
+	//判断original pattern是否存在循环
+//	private static void foundInternalCycle(ArrayList<List<String>> pattList, ArrayList<Cycle> cycleList) {
+//		for (List<String> patt : pattList)
+//		{
+//            String patt1 = patt.toString();
+//		    for(Cycle cycle: cycleList){
+//		    	ArrayList<String> cycleTrace = cycle.getTrace();
+//		    	if(!patt.equals(cycleTrace)){
+//		    	    System.out.println(patt1+"....");
+//		    	    String cycleChain= convertToString(cycleTrace);
+////		    	    String chain = cycleChain.toString();
+//		    	    
+////		    		System.out.println(patt.containsAll(cycleChain));
+//		    	    System.out.println(cycleChain);
+//		    	    System.out.println(findCycleNumberFromInputString(patt1,cycleChain));
+//		    	    
+////			    	System.out.println(patt1.contains(cycleChain));
+//		    	}
+//		    }
+//		    	
+//		    
+//		}
+//		
+//	}
+
+//	private static String convertToString(ArrayList<String> cycleTrace) {
+//		String stringCycle = "";
+////		if(cycleTrace.size()==1){
+////			stringCycle = cycleTrace.get(0);
+////		}else if(cycleTrace.size()>1){
+////			
+////		}
+//		
+//		for(int i=0;i<cycleTrace.size();i++){
+//			if(i==cycleTrace.size()-1){
+//				stringCycle +=cycleTrace.get(i);
+//			}else{
+//				stringCycle +=cycleTrace.get(i) + ",";
+//			}
+//		}
+//		
+//		return stringCycle;
+//	}
 
 	private static Map<List<String>, Integer> getFrequencyPattern(Map<List<String>, Integer> map2, int size, float support) {
 		Map<List<String>, Integer> map = new HashMap<List<String>, Integer>();
@@ -228,34 +304,51 @@ public class SplitBehaviorChain {
 			 } 
 		
 	}
-	private static void printList(List<Entry<List<String>, Integer>> list) {
-      for(Map.Entry<List<String>,Integer> mapping:list){ 
-    	  System.out.println("Pattern = " + mapping.getKey() + ", Weight = " + mapping.getValue()); 
-      } 
-	}
+//	private static void printList(List<Entry<List<String>, Integer>> list) {
+//      for(Map.Entry<List<String>,Integer> mapping:list){ 
+//    	  System.out.println("Pattern = " + mapping.getKey() + ", Weight = " + mapping.getValue()); 
+//      } 
+//	}
 
-	private static Map<List<String>, Integer> CountDuplicatedList(ArrayList<List<String>> pattList) {
-		Map<List<String>, Integer> map2 = new HashMap<List<String>, Integer>();
+	private static List<Pattern> CountDuplicatedList(List<List<String>> pattList) {
+		List<Pattern> patternList = new ArrayList<>();
+	
+		Map<List<String>, Pattern> map = new HashMap<List<String>, Pattern>();
+		Pattern pattern;
+		int pattern_name=1;
 		for (List<String> item : pattList) {
-			if (map2.containsKey(item)) {
-				map2.put(item, map2.get(item).intValue() + 1);
-			} else {
-				map2.put(item, new Integer(1));
+			pattern = map.get(item);
+			
+//			System.out.println(pattern.getWeight());
+//			System.out.println(item);
+			
+			if(pattern==null){
+				pattern = new Pattern();
+				pattern.setPatternName(pattern_name);
+				pattern.setTrace(item);
+				pattern.setWeight(1);
+				pattern_name+=1;
+				map.put(item, pattern);
+				patternList.add(pattern);
+				
+			}else {
+				pattern.setWeight(pattern.getWeight()+1);
 			}
 		}
-		Iterator<List<String>> keys = map2.keySet().iterator();
-		while (keys.hasNext()) {
-			List<String> key = keys.next();
+		
+//		Iterator<List<String>> keys = map2.keySet().iterator();
+//		while (keys.hasNext()) {
+//			List<String> key = keys.next();
 //			System.out.println(key + ":" + map2.get(key).intValue() + ", ");
-		}
-		return map2;
+//		}
+		return patternList;
 	}
 
-	private static ArrayList<List<String>> SplitInputStringByStartVertex(String oriString, String start) {
-		 ArrayList<List<String>> pattList = new ArrayList<List<String>>();
+	private static List<List<String>> SplitInputStringByStartVertex(String oriString, String start) {
+		 List<List<String>> pattList = new ArrayList<List<String>>();
 		  String behaviorList2[] = oriString.split(",");
 		  
-		  ArrayList<String> behaviorList= new ArrayList<>();
+		  List<String> behaviorList= new ArrayList<>();
 		  
 		  
 		  for(int i = 0; i < behaviorList2.length; i++){
@@ -276,6 +369,7 @@ public class SplitBehaviorChain {
 			  if(i==0 && (findStart.get(i)!=0)){
 				  behavior = behaviorList.subList(0, findStart.get(i));
 				  pattList.add(behavior);
+//				  add(behavior);
 				  System.out.println(behavior);
 			  }
 			  behavior = behaviorList.subList(findStart.get(i), findStart.get(i+1));
@@ -291,7 +385,7 @@ public class SplitBehaviorChain {
 		  return pattList;
 	}
 	
-	public static void writeFileContext(ArrayList<List<String>> pattList, String path) throws Exception {
+	public static void writeFileContext(List<List<String>> pattList, String path) throws Exception {
 		File file = new File(path);
         //如果没有文件就创建
         if (!file.isFile()) {

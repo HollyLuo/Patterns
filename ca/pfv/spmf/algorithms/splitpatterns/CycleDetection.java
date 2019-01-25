@@ -282,15 +282,15 @@ public class CycleDetection {
 		}
 	}
 	
-//	public void splitCycleList() {
-//		for(int i=0;i<cycleList.size();i++){
-//			int weight = cycleList.get(i).getWeight();
-//			while(weight>0){
-//				System.out.println("cycle: "+ cycleList.get(i).getTrace());
-//				weight--;
-//			}
-//		}
-//	}
+	public void splitCycleList() {
+		for(int i=0;i<cycleList.size();i++){
+			int weight = cycleList.get(i).getWeight();
+			while(weight>0){
+				System.out.println("cycle: "+ cycleList.get(i).getTrace());
+				weight--;
+			}
+		}
+	}
 	public String getStart() {
 		return start;
 	}
