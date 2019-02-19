@@ -3,6 +3,7 @@ package pfv.spmf.algorithms.splitpatterns;
 import java.util.ArrayList;
 import java.util.List;
 
+import jdk.nashorn.internal.ir.Flags;
 import pfv.spmf.algorithms.splitpatterns.cycle.Cycle;
 import pfv.spmf.algorithms.splitpatterns.cycle.InternalCycle;
 //import pfv.spmf.algorithms.splitpatterns.cycle.Vertex;
@@ -60,10 +61,13 @@ public class Pattern {
 	    for(Cycle cycle: cycleList){
 	    	ArrayList<String> cycleTrace = cycle.getTrace();
 	    	if(!trace.equals(cycleTrace)){
-	    	    hasInternalCycle = findInternalCycleFromPattern(cycle);
-	    	    if(hasInternalCycle){
+	    	    boolean hasInternalCycle1 = findInternalCycleFromPattern(cycle);
+	    	    if(hasInternalCycle1){
+//	    	    	System.out.println("hasInternalCycle");
 	    	    	this.internalCycle.printInternalCycle();
+	    	    	hasInternalCycle = hasInternalCycle1;
 //	    	    	List<String> newTrace = removeInternalCycle();
+	    	    	
 	    	    }
 	    	   
 //	    	    findInternalCycleFromPattern(trace,cycle);
@@ -84,21 +88,27 @@ public class Pattern {
 	}
 	
 	private boolean findInternalCycleFromPattern(Cycle cycle) {
+		
 		String patt1 = trace.toString().replace(" ", "");
 		String cycleChain= convertToString(cycle.getTrace());
 		
         int num = 0;
-//        System.out.println("Pattern:" + oriString);
-//        System.out.println("Cycle:"+ sToFind);
+//        System.out.println("--patt1:" + patt1);
+//        System.out.println("--Cycle:"+ cycleChain);
         String newString = patt1;
         int index = 0;
         boolean hasInternalCycle=false;
         while (newString.contains(cycleChain)) {
+        	
         	if(patt1.indexOf(cycleChain) == 1){
         		index = patt1.indexOf(cycleChain);
+//        		System.err.println("1111");
         	}else{
+        		
         		index = (patt1.indexOf(cycleChain)+1)/2;
+//        		System.err.println("patt1.indexOf(cycleChain): "+patt1.indexOf(cycleChain));
 			}
+//        	System.out.println(index-1);
       	
 //        	System.out.println("start index: "+ index);
 //        	System.out.println("indexOf: "+ oriString.indexOf(sToFind));
@@ -149,6 +159,17 @@ public class Pattern {
 	public void printPattern() {
 		System.out.println("Pattern: "+ this.trace);
 		System.out.println("Weight: " + this.weight);
+		
+	}
+	
+	public boolean isFrequencyPattern(int size, float support){
+		float a= 0.0f;
+		a = weight/(float)size;
+		if(a >= support){
+			return true;
+		}else {
+			return false;
+		}
 		
 	}
 	   

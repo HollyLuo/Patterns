@@ -15,7 +15,7 @@ public class MainTestSplitPatterns_saveToFile {
 
 	public static void main(String [] arg) throws Exception{
 
-		String input = fileToPath("behavior2.txt");
+		String input = fileToPath("behavior3.txt");
 //		SplitBehaviorChain chain = new SplitBehaviorChain();
 		float support = 0.2f;
 		SplitBehaviorChain.runAlgorithm(input,support);

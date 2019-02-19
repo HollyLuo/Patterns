@@ -47,9 +47,9 @@ public class InternalCycle {
 		return this.cycle_start + trace.size()*loop_info;
 	}
 	public void printInternalCycle() {
-		System.out.println("InternalCycle: " + trace);
-		System.out.println("InternalCycle times: "+ loop_info);
-		System.out.println("InternalCycle start: "+ cycle_start);
+		System.out.println("-----InternalCycle: " + trace);
+		System.out.println("-----InternalCycle times: "+ loop_info);
+		System.out.println("-----InternalCycle start: "+ cycle_start);
 	}
 	
 

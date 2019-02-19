@@ -114,12 +114,12 @@ public class SplitBehaviorChain {
 		cycleDetection.hasCycle();
 		cycleList = cycleDetection.getCycleList();
 		String start  = cycleDetection.getStart();
-		
+		 System.out.println();
 		System.out.println("--------------Behavior split-----------------");
 		List<List<String>> pattList = new ArrayList<List<String>>();
 	    pattList =  SplitInputStringByStartVertex(inputString,start);
 	    int size = pattList.size();
-	    
+	    System.out.println();
 	    System.out.println("--------------All Pattern -----------------");
 //	    Map<List<String>, Integer> map2 = new HashMap<List<String>, Integer>();
 	    
@@ -131,10 +131,8 @@ public class SplitBehaviorChain {
 	    	pattern.printPattern(); 	
 	    	pattern.foundInternalCycle(cycleList);
 	    	pattern.removeInternalCycle();
-	    	if(pattern.hasInternalCycle){
-	    		
-	    		System.out.println("new_trace: "+ pattern.getNewTrace());
-	    		
+	    	if(pattern.hasInternalCycle){		
+	    		System.out.println("--new_trace: "+ pattern.getNewTrace());
 	    	}
 //	    		List<String> newTrace = pattern.getNewTrace();
 //	    		Pattern pattern2 = new Pattern();
@@ -150,6 +148,7 @@ public class SplitBehaviorChain {
 	    }
 	    
 	    List<Pattern> afterCountPatternList =  CountPattern(patternList);
+	    System.out.println();
 	    System.out.println("-----------------afterCountPatternList-------------");
 	    for(Pattern new_pattern : afterCountPatternList){
 	    	new_pattern.printPattern(); 
@@ -183,11 +182,16 @@ public class SplitBehaviorChain {
 //        System.out.println();
         
         System.out.println("--------------Frequecy Pattern -----------------");
-        Map<List<String>, Integer> map3 = new HashMap<List<String>, Integer>();
+//        Map<List<String>, Integer> map3 = new HashMap<List<String>, Integer>();
+        for(Pattern new_pattern : afterCountPatternList){
+        	if(new_pattern.isFrequencyPattern(size, support)){
+        		new_pattern.printPattern(); 
+        	}
+        }
        
 //        foundInternalCycle(pattList,cycleList);
 //        map3 = getFrequencyPattern(map2,size,support);
-        printMap(map3);
+//        printMap(map3);
 		
 		String path="/Users/ling/Desktop/pattern/spmf/ca/pfv/spmf/test/contextPrefixSpan2.txt";
 //		String path="/Users/ling/Documents/Eclipseworkspace/Weka/test/src/test/behavor2.txt";
@@ -279,22 +283,23 @@ public class SplitBehaviorChain {
 //		return stringCycle;
 //	}
 
-	private static Map<List<String>, Integer> getFrequencyPattern(Map<List<String>, Integer> map2, int size, float support) {
-		Map<List<String>, Integer> map = new HashMap<List<String>, Integer>();
-//		System.out.println(size);
-//		System.out.println(support);
-		
-		for (Map.Entry<List<String>, Integer> entry : map2.entrySet()) { 
-//			System.out.println(entry.getValue());
-			float a= 0.0f;
-			a = (float)entry.getValue()/(float)size;
-			if(a >= support){
-				map.put(entry.getKey(), entry.getValue());
-			}
-		} 
-		
-		return map;
-	}
+
+//	private static List<Pattern> getFrequencyPattern(List<Pattern> patternList, float support) {
+//		Map<List<String>, Integer> map = new HashMap<List<String>, Integer>();
+////		System.out.println(size);
+////		System.out.println(support);
+//		
+//		for (Map.Entry<List<String>, Integer> entry : map2.entrySet()) { 
+////			System.out.println(entry.getValue());
+//			float a= 0.0f;
+//			a = (float)entry.getValue()/(float)size;
+//			if(a >= support){
+//				map.put(entry.getKey(), entry.getValue());
+//			}
+//		} 
+//		
+//		return map;
+//	}
 
 	
 
