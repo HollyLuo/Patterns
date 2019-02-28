@@ -51,6 +51,4 @@ public class InternalCycle {
 		System.out.println("-----InternalCycle times: "+ loop_info);
 		System.out.println("-----InternalCycle start: "+ cycle_start);
 	}
-	
-
 }

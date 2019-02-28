@@ -15,9 +15,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+
+
 import javax.swing.text.StyledEditorKit.BoldAction;
 
-import com.sun.security.auth.NTDomainPrincipal;
+import org.bson.Document;
+import org.json.simple.JSONObject;
+
+import com.mongodb.MongoClient;
+import com.mongodb.MongoException;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
 
 import pfv.spmf.algorithms.splitpatterns.cycle.Graph;
 import pfv.spmf.algorithms.splitpatterns.cycle.Edge;
@@ -42,19 +51,17 @@ public class SplitBehaviorChain {
         return message;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public  static void runAlgorithm(String inputFile, float support) throws Exception  {
 		String ids = readFile(inputFile);
 		String behaviorList[] = ids.split(",");
 		ArrayList<String> behaviorList2= new ArrayList<>();
-//		String oriInputString = 
-		
-//		StringBuffer sb = new StringBuffer();
+
 		for(int i = 0; i < behaviorList.length; i++){
 			behaviorList2.add(behaviorList[i]);
 		}
 		String inputString = ids.toString();
-		System.out.println("behavior chain: "+ inputString);
-		System.out.println("");
+		
 //		System.out.println("--------------scan the behavior chain-----------------");
 		
 		Vertex current;
@@ -114,7 +121,7 @@ public class SplitBehaviorChain {
 		cycleDetection.hasCycle();
 		cycleList = cycleDetection.getCycleList();
 		String start  = cycleDetection.getStart();
-		 System.out.println();
+		System.out.println();
 		System.out.println("--------------Behavior split-----------------");
 		List<List<String>> pattList = new ArrayList<List<String>>();
 	    pattList =  SplitInputStringByStartVertex(inputString,start);
@@ -128,12 +135,17 @@ public class SplitBehaviorChain {
 //	    patternList2.addAll(patternList);
 	    
 	    for(Pattern pattern : patternList){
+
+	    	
 	    	pattern.printPattern(); 	
 	    	pattern.foundInternalCycle(cycleList);
 	    	pattern.removeInternalCycle();
 	    	if(pattern.hasInternalCycle){		
 	    		System.out.println("--new_trace: "+ pattern.getNewTrace());
 	    	}
+	    	JSONObject jsonObject = pattern.toJsonObject();
+	    	System.out.println(jsonObject.toJSONString());
+	    	saveJsonObjectToMongoDb(jsonObject,"test","all_patterns");
 //	    		List<String> newTrace = pattern.getNewTrace();
 //	    		Pattern pattern2 = new Pattern();
 //	    		
@@ -150,19 +162,34 @@ public class SplitBehaviorChain {
 	    List<Pattern> afterCountPatternList =  CountPattern(patternList);
 	    System.out.println();
 	    System.out.println("-----------------afterCountPatternList-------------");
+	    
+	    int union_pattern_id = 0;
+	    
 	    for(Pattern new_pattern : afterCountPatternList){
+	    	List<Integer> all_pttern_ids = new ArrayList<Integer>();
+	    	union_pattern_id += 1;
 	    	new_pattern.printPattern(); 
 	    	System.out.println("---------including---------");
+	    	
 	    	for(Pattern ori_pattern : patternList){
 	    		if(ori_pattern.getNewTrace().equals(new_pattern.getTrace())){	    			
 	    			ori_pattern.printPattern();
+	    			all_pttern_ids.add(ori_pattern.getPatternName());
     			}
 	    	}
+	    	JSONObject union_pattern = new JSONObject();
+	    	union_pattern.put("union_pattern_id", union_pattern_id);
+	    	union_pattern.put("union_behaviors", new_pattern.getTrace());
+	    	union_pattern.put("union_weights", new_pattern.getWeight());
+	    	union_pattern.put("branches", all_pttern_ids);
+	    	saveJsonObjectToMongoDb(union_pattern,"test","union_patterns");
+	    	
+	    	
 	    	System.out.println("");
 	    	System.out.println("");
 	    }
 	    
-	    
+
 	   
 	   
 //	    patternList.get(4).printPattern();
@@ -198,6 +225,25 @@ public class SplitBehaviorChain {
 		writeFileContext(pattList,path);	
 	}
 	
+	private static void saveJsonObjectToMongoDb(JSONObject jsonObject,String databaseName,String collectionName) {
+		try{		 
+			 MongoClient mongoClient =  new MongoClient("localhost",27017);
+			 MongoDatabase mongoDatabase =  mongoClient.getDatabase(databaseName);
+//			 System.out.println("Connect to database successfully");
+			 
+			 MongoCollection<Document> collection =  mongoDatabase.getCollection(collectionName);
+			 System.out.println(jsonObject.toJSONString());
+			 Document document = Document.parse(jsonObject.toJSONString());
+			 
+			 collection.insertOne(document);
+			 mongoClient.close();
+
+		 }catch(MongoException e){
+			e.printStackTrace();
+		} 
+		
+	}
+
 	private static List<Pattern> CountPattern(List<Pattern> patternList) {
 		List<Pattern> afterCountPatternList = new ArrayList<>();	
 		Map<List<String>, Pattern> map = new HashMap<List<String>, Pattern>();
@@ -222,6 +268,7 @@ public class SplitBehaviorChain {
 		return afterCountPatternList;
 	}
 	
+
 //	
 //	private static int findCycleNumberFromInputString(String oriString,String sToFind) {
 ////    	String a[] = s.split("#");
@@ -407,9 +454,7 @@ public class SplitBehaviorChain {
         }
         writer.close();
     }
-		
-		
-		
+				
 		//"X,Y,A,B,C,D,E,A,B,C,D,E,A,M,N,E,A,M,N,E,A,B,C,D,E,A,M,N,E"
 //		List<ArrayList<Integer>> pairList = new ArrayList<ArrayList<Integer>>();
 		

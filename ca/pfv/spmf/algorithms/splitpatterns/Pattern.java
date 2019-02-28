@@ -1,9 +1,15 @@
 package pfv.spmf.algorithms.splitpatterns;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import jdk.nashorn.internal.ir.Flags;
+import org.json.simple.JSONObject;
+
+//import com.google.gson.JsonArray;
+//import com.google.gson.JsonObject;
+
 import pfv.spmf.algorithms.splitpatterns.cycle.Cycle;
 import pfv.spmf.algorithms.splitpatterns.cycle.InternalCycle;
 //import pfv.spmf.algorithms.splitpatterns.cycle.Vertex;
@@ -75,7 +81,7 @@ public class Pattern {
 	    	}
 	    }
 	}
-	private static String convertToString(ArrayList<String> cycleTrace) {
+	private static String convertToString(List<String> cycleTrace) {
 		String stringCycle = "";
 		for(int i=0;i<cycleTrace.size();i++){
 			if(i==cycleTrace.size()-1){
@@ -153,13 +159,11 @@ public class Pattern {
 //        
 //        return num;
 //    }
-	
-	
+		
 	
 	public void printPattern() {
 		System.out.println("Pattern: "+ this.trace);
 		System.out.println("Weight: " + this.weight);
-		
 	}
 	
 	public boolean isFrequencyPattern(int size, float support){
@@ -170,6 +174,22 @@ public class Pattern {
 		}else {
 			return false;
 		}
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public JSONObject toJsonObject() {
+		JSONObject output = new JSONObject();
+		output.put("pattern_id", this.pattern_name);
+		output.put("trace",this.getTrace());
+		output.put("weights", this.weight);
+		JSONObject internal = new JSONObject();
+		internal.put("cycle_trace", this.internalCycle.getTrace());
+		internal.put("cycle_times", this.internalCycle.getCountInfo());
+		internal.put("cycle_start", this.internalCycle.getCycleStart());
+		output.put("internal_cycle", internal);
+		output.put("new_trace", this.newTrace);
+		return output;
 		
 	}
 	   

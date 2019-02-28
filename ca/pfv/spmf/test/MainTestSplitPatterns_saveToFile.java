@@ -18,21 +18,9 @@ public class MainTestSplitPatterns_saveToFile {
 		String input = fileToPath("behavior3.txt");
 //		SplitBehaviorChain chain = new SplitBehaviorChain();
 		float support = 0.2f;
+//		String output = "/Users/ling/Documents/Eclipseworkspace/Weka/pattern/ca/pfv/spmf/test/result/behavior3.txt";
 		SplitBehaviorChain.runAlgorithm(input,support);
 		
-//		String output = "./output.txt";  // the path for saving the frequent itemsets found
-//		
-//		double minsup = 0.4; // means a minsup of 2 transaction (we used a relative support)
-		
-		// Applying the Apriori algorithm
-//		AlgoApriori algo = new AlgoApriori();
-		
-		
-		// Uncomment the following line to set the maximum pattern length (number of items per itemset)
-//		algo.setMaximumPatternLength(3);
-
-//		algo.runAlgorithm(minsup, input, output);
-//		algo.printStats();
 	}
 	
 	public static String fileToPath(String filename) throws UnsupportedEncodingException{
